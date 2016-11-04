@@ -1,0 +1,19 @@
+{
+  "name": "calendarjs",
+  "version": "0.2.0",
+  "description": "calendarjs,demo:http://gtdalp.github.io/calendarjs/demos/calendarjs.html",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gtdalp/pushbutton.git"
+  },
+  "author": "xisa",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gtdalp/pushbutton/issues"
+  },
+  "homepage": "https://github.com/gtdalp/pushbutton#readme"
+}

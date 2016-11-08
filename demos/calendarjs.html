@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<title>Pushbutton</title>
+<title>日期区间选择组件</title>
 <link rel="stylesheet" type="text/css" href="../src/css/base.css" />
 <link rel="stylesheet" type="text/css" href="calendarjs.css" />
 <script src="../src/jslib/require.js"></script>
@@ -16,15 +16,54 @@
 </style>
 <section id="calendarjs" class="calendarjs"></section>
 <script>
-require(['zepto', 'calendarjs'], function(){
+require(['iscroll', 'calendarjs'], function(){
     var Calendarjs = require('calendarjs');
 	var calendarjs = new Calendarjs('#calendarjs', {
-		//
+		type: 'schedule',    // 日程
+        // systemDate : '2016-6-2',
+        render: '.widget-select-date',   // render
+        weekName: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+        adpter: function () {
+            var data = [
+                {
+                    date: '2016-7-6',
+                    values: {
+                        des: '返款',
+                        data: {
+                            productName: '西撒作品',
+                            pic: 1000
+                        }
+                    }
+                },
+                {
+                    date: '2016-7-20',
+                    values: {
+                        des: '返款',
+                        text: '10000元',
+                        data: {
+                            productName: '西撒延时作品',
+                            pic: 110000
+                        }
+                    }
+                }
+            ];
+            return data;
+        },
+        callback: function(data){
+            console.log(data);
+            // if (data.data) {
+            //     var o = data.data;
+            //     $('#productName').html(o.productName);
+            //     $('#productPic').html(o.pic);
+            // }
+            // $('#now-date').html(data.year + ' 年 ' + data.month + ' 月').attr('date-value', data.date);
+        }
+    });
 });
 require.config({
     paths: {
-        "zepto": "../src/jslib/zepto.min",
-        "calendarjs": "../build/calendarjs.min"
+        "iscroll": "../src/jslib/iscroll.min",
+        "calendarjs": "../build/calendarjs"
     }
 });
 </script>

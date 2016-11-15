@@ -17,48 +17,48 @@
 <section id="calendarjs" class="calendarjs"></section>
 <script>
 require(['iscroll', 'calendarjs'], function(){
-    var Calendarjs = require('calendarjs');
+	var Calendarjs = require('calendarjs');
 	var calendarjs = new Calendarjs('#calendarjs', {
 		type: 'schedule',    // 日程
-        // systemDate : '2016-6-2',
-        render: '.widget-select-date',   // render
-        weekName: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
-        adpter: function () {
-            var data = [
-                {
-                    date: '2016-7-6',
-                    values: {
-                        des: '返款',
-                        data: {
-                            productName: '西撒作品',
-                            pic: 1000
-                        }
-                    }
-                },
-                {
-                    date: '2016-7-20',
-                    values: {
-                        des: '返款',
-                        text: '10000元',
-                        data: {
-                            productName: '西撒延时作品',
-                            pic: 110000
-                        }
-                    }
-                }
-            ];
-            return data;
-        },
-        callback: function(data){
-            console.log(data);
-            // if (data.data) {
-            //     var o = data.data;
-            //     $('#productName').html(o.productName);
-            //     $('#productPic').html(o.pic);
-            // }
-            // $('#now-date').html(data.year + ' 年 ' + data.month + ' 月').attr('date-value', data.date);
-        }
-    });
+		// systemDate : '2016-6-2',
+		render: '.widget-select-date',   // render
+		weekName: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+		adpter: function () {
+		    var data = [
+			{
+			    date: '2016-7-6',
+			    values: {
+				des: '返款',
+				data: {
+				    productName: '西撒作品',
+				    pic: 1000
+				}
+			    }
+			},
+			{
+			    date: '2016-7-20',
+			    values: {
+				des: '返款',
+				text: '10000元',
+				data: {
+				    productName: '西撒延时作品',
+				    pic: 110000
+				}
+			    }
+			}
+		    ];
+		    return data;
+		},
+		callback: function(data){
+		    console.log(data);
+		    // if (data.data) {
+		    //     var o = data.data;
+		    //     $('#productName').html(o.productName);
+		    //     $('#productPic').html(o.pic);
+		    // }
+		    // $('#now-date').html(data.year + ' 年 ' + data.month + ' 月').attr('date-value', data.date);
+		}
+	});
 });
 require.config({
     paths: {

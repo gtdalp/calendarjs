@@ -17,198 +17,6 @@
   }
 }(this, function() {
     'use strict';
-
-    // dom节点
-    var $ = (function () {
-        function keyValue(args, getter, setter){
-            var attrs = {}, 
-                keys, 
-                key = args[0], 
-                value = args[1];
-            
-            if(typeof key === 'object'){
-                attrs = key;
-            }else if(args.length === 1){
-                return this[0] ? getter(this[0]) : null;
-            }else{
-                attrs[key] = value;
-            };
-
-            keys = Object.keys(attrs);
-            
-            return this.each(function(el){
-                keys.forEach(function(key){
-                    setter(el, key, attrs);
-                });
-            });
-        };
-
-        // 查找节点，返回一个可操作的节点数组
-        function tethys(selector, context){
-
-            var nodes = [];
-            
-            if(typeof selector === 'string'){
-
-                nodes = (context || document).querySelectorAll(selector);
-            }else{
-
-                nodes = [selector];
-            };
-
-            tethys.extend(nodes, tethys.fn);
-
-            return nodes;
-        };
-
-        // 扩展
-        tethys.extend = function(){
-            var args = arguments, 
-                deep = false, 
-                dest, 
-                prop = Array.prototype;
-
-            if (typeof args[0] === 'boolean') {
-                deep = prop.shift.call(args);
-            };
-
-            dest = prop.shift.call(args);
-            
-            prop.forEach.call(args, function (src) {
-                Object.keys(src).forEach(function (key) {
-                    if (deep && typeof src[key] === 'object' && typeof dest[key] === 'object') {
-                        extend(true, dest[key], src[key]);
-                    } else if (typeof src[key] !== 'undefined') {
-                        dest[key] = src[key];
-                    };
-                });
-            });
-            return dest;
-        };
-
-        // 方法
-        tethys.fn = {
-
-            // 遍历
-            each: function(fn){
-                
-                Array.prototype.forEach.call(this || [], fn);
-
-                return this;
-            },
-
-            // 绑定事件
-            on: function(events, fn){
-
-                events = events.split(/\s*\,\s*/);
-
-                return this.each(function(el){
-
-                    fn = fn.bind(el);
-
-                    events.forEach(function(event){
-                        el.addEventListener(event, fn);
-                    });
-                });
-            },
-
-            // 设置css
-            // css('color', 'red')
-            // css({ color: 'red' })
-            css: function(key, value){
-                
-                var format = function(key){
-                    return key.replace(/(-([a-z]))/g, function(s, s1, s2){
-                        return s2.toUpperCase();
-                    });
-                };
-
-                return keyValue.call(this, arguments, function(el){
-                    return el.style[format(key)];
-                }, function(el, key, attrs){
-                    el.style[format(key)] = attrs[key] + '';
-                });
-            },
-
-            // 设置或者返回属性
-            attr: function(key, value){
-
-                return keyValue.call(this, arguments, function(el){
-                    return el.getAttribute(key);
-                }, function(el, key, attrs){
-                    el.setAttribute(key, attrs[key] + '');
-                });
-            },
-
-            // 检查是否有class
-            hasClass: function(cls){
-                var has = false, reg = new RegExp('\\b' + cls + '\\b');
-
-                this.each(function(el){
-                    has = has || !!el.className.match(reg);
-                });
-                
-                return has;
-            },
-
-            // 添加class
-            addClass: function(cls, type){
-                var reg = new RegExp('\\b' + cls + '\\b');
-                
-                // 为所有节点添加或删除class
-                return this.each(function(el){
-                    var name = el.className;
-
-                    if(typeof name !== 'string') return;
-                    
-                    if(type === 'remove'){
-                        // remove
-                        if(name.match(reg)) {
-                            el.className = name.replace(reg, '');
-                        }
-                    }else{
-                        // add
-                        if(!name.match(reg)) {
-                            el.className += ' ' + cls;
-                        }
-                    }
-                });
-            },
-
-            // 删除class
-            removeClass: function(cls){
-                return this.addClass(cls, 'remove');
-            },
-
-            // 设置html
-            html: function(html){
-                return this.each(function(el){
-                    el.innerHTML = html;
-                });
-            },
-            
-            // 显示
-            show: function(){
-                return this.each(function(el){
-                    if(el.style.display === 'none'){
-                        el.style.display = el.getAttribute('o-d') || '';
-                    };
-                });
-            },
-          
-            // 隐藏
-            hide: function(){
-                return this.each(function(el){
-                    if(el.style.display !== 'none') {
-                        el.setAttribute('o-d', el.style.display);
-                        el.style.display = 'none';
-                    };
-                });
-            }
-        };
-        return tethys;
-    })();
-
     function Calendarjs(element, options) {
         this.ele = $(element);
         var id   = this.ele.attr('id');
@@ -227,45 +35,39 @@
         version: '0.3.0',
         // 初始化
         init: function (options) {
-            this.options = {
-                texts: {
-                    today: '今天',
-                    start: '开始',
-                    end: '结束'
-                },
+            var nowDate = new Date(), op, systemDate;
+
+            op = this.options = $.extend(true, {
+                texts: {today: '今天', start: '开始', end: '结束'},
                 weekName: ['日', '一', '二', '三', '四', '五', '六'],
                 span: 30,   // 选择日期跨度有几天
                 displayMonthNumber: 3,
-                nowDate: new Date(),
-                windowWidth: $(window).width(),
-                windowHeight: $(window).height(),
-                clickNoRepeat: true   // 防止重复点击
-            }
+                nowDate: nowDate,
+                systemDate: nowDate,
+                windowWidth: window.screen.width,
+                windowHeight: window.screen.height,
+                clickNoRepeat: true,   // 防止重复点击
+                defalutDate: nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' +  nowDate.getDate(),
+            }, options);
 
-            var op = this.options;
-            this.options.systemDate   = op.nowDate;
-            this.options.defalutDate  = nowDate.getFullYear() + '-' + 
-                                        (nowDate.getMonth() + 1) + '-' + 
-                                        nowDate.getDate();
-            this.options.intervalDate = [op.defalutDate, op.defalutDate];
-
-            $.extend(true, this.options, options);
-
-            var systemDate = new Date(op.systemDate);
+            op.intervalDate = [op.defalutDate, op.defalutDate];
+            systemDate = new Date(op.systemDate);
 
             // 第一个版本只考虑横向滚动
             if (op.type === 'schedule') {
-                this.options.wScroll = true;
+                op.wScroll = true;
             }
+
             // 系统时间
-            this.options.newDateYMD = {
+            op.newDateYMD = {
                 getYear: systemDate.getFullYear(),
                 getMonth: systemDate.getMonth(),
                 getDay: systemDate.getDate()
             }
 
             // 返回间隔时间的每一天
-            this.options.getIntervalDate = this._getIntervalDate(op.intervalDate[0], op.intervalDate[1]);
+            op.getIntervalDate = this._getIntervalDate(op.intervalDate[0], op.intervalDate[1]);
+
             // var render = this.options.render;
             // if (render) {
             //     this.options.target = render.replace('.', "").replace('#', "") + '-widget-calendar';
@@ -281,22 +83,27 @@
         },
         // 滚动动画
         scrollAnimation: function (index, flg) {
-            
-            this.options.clickPage = true;
+            var op = this.options,
+                clickNoRepeat = op.clickNoRepeat,
+                left;
+
+            op.clickPage = true;
+
             // 是否是点击切换到上下月
             if (!flg) {
-                this.options.isClickScroll = true;
+                op.isClickScroll = true;
             }
-            var op = this.options;
-            var left = index === 0 ? 0 : -op.windowWidth * 2
+            left = index === 0 ? 0 : -op.windowWidth * 2;
+
             // 防止多次点击
-            if (!op.clickNoRepeat) return;
-            this.options.clickNoRepeat = false;
+            if (!clickNoRepeat) return;
+
+            clickNoRepeat = false;
             op.is.scrollTo(left, 0, 300);
 
             setTimeout(function () {
-                this.options.clickNoRepeat = true;
-            }.bind(this), 301);
+                clickNoRepeat = true;
+            }, 301);
         },
         // 滑动到上一个月
         slideScrollPrev: function (flg) {
@@ -312,36 +119,36 @@
         },
         // 设置日期
         setDate: function (date) {
+            var op = this.options, callback, _d;
             // 第一次加载滑动可以执行回调
             if (this._firstRender) {
-                this.options.isClickScroll = true;
+                op.isClickScroll = true;
             }
-            var op = this.options;
             // 重置
             this._firstRender = false;
+
+            op.newSystemDate = date;
             if (typeof date === 'string') {
-                var _d = new Date(date);
-                this.options.newSystemDate = {
+                _d = new Date(date);
+                op.newSystemDate = {
                     getYear: _d.getFullYear(),
                     getMonth: _d.getMonth() - 1,
                     getDay: 1
                 };
-            } else {
-                this.options.newSystemDate = date;
             }
 
             // 销毁之前的iscroll
-            this.options.is.destroy();
-            this.options.is = null;
+            op.is.destroy();
+            op.is = null;
             $(op.render).html('');
             // 重新初始化日期 重新渲染dom
-            this._init(this.options);
+            this._init(op);
 
             // 滚动完毕之后回调当前是那一年和月份
-            var callback = this.options.callback;
+            callback = op.callback;
             
-            if ($.isFunction(callback) && this.options.isClickScroll) {
-                var nowDate = $( "#" + this.options.target).find('.widget-select-date:nth-child(2)').attr('data-date').split('-');
+            if ($.isFunction(callback) && op.isClickScroll) {
+                var nowDate = $( "#" + op.target).find('.widget-select-date:nth-child(2)').attr('data-date').split('-');
                 
                 callback({
                     year: nowDate[0],
@@ -382,7 +189,7 @@
                 , wScroll = op.wScroll
                 , tdString = target + ' .widget-select-date-table tr td'
                 , td = $(tdString)
-                , evt = ZSYWEB.Event
+                , evt = self.evt
                 , adpter = op.adpter
                 , adpterLength = 0
                 , type = op.type
@@ -564,13 +371,11 @@
         },
         // 获取时间戳
         _getTime: function (date) {
-
             if (date) {
                 return new Date(Date.parse(date.replace(/-/g,"/"))).getTime();
             } else {
                 return 0;
             }
-            
         },
         // 时间间隔计算
         _getDateDiff: function (startDate, endDate) { 
@@ -613,7 +418,7 @@
             $(render).html(html);
 
             // 获取当前是年月
-            this.options.nowDateYearMonth = $( "#" + op.target).find('.widget-select-date:nth-child(1)').attr('data-date').split('-');
+            op.nowDateYearMonth = $( "#" + op.target).find('.widget-select-date:nth-child(1)').attr('data-date').split('-');
             // 默认第一次加载回调年月
             if (this._firstRender) {
                 var today = op.today
@@ -637,7 +442,7 @@
                     scrollY: false
                 }
             }
-            this.options.is = new IScroll(render, isOption);
+            op.is = new IScroll(render, isOption);
 
             // 日程组件 widget-select-date
             if (type === 'schedule') {
@@ -645,7 +450,7 @@
                 var target = $('#' + op.target)
                     , width = op.windowWidth
                     , systemDate = new Date(op.systemDate)
-                    , endClickDate = this.options.endClickDate
+                    , endClickDate = op.endClickDate
                     , year = systemDate.getFullYear()
                     , month = systemDate.getMonth() + 1
                     , day = systemDate.getDate()
@@ -653,9 +458,9 @@
                     , hei = target.find('.widget-select-date-schedule').height()
                     ;
                 target.parent(render).height(hei).addClass('textOverflow');
-                this.options.is.refresh();
+                op.is.refresh();
 
-                this.options.is.scrollTo(-width, 0, 0);
+                op.is.scrollTo(-width, 0, 0);
                 nowDate.attr('data-select', op.texts.today);
                 
                 if (typeof endClickDate === 'string') {
@@ -671,24 +476,24 @@
         },
         _createTemplate: function () {
 
-            var op = this.options
-                , weekName = op.weekName
-                , intervalDate = op.intervalDate
-                , newDateYMD = op.newSystemDate ? op.newSystemDate : op.newDateYMD
-                , systemDate = op.systemDate
-                , texts = op.texts
-                , todayText = texts.today
-                , startText = texts.start
-                , endText = texts.end
-                , displayMonthNumber = op.displayMonthNumber
-                , getIntervalDate = op.getIntervalDate
-                , wScroll = op.wScroll
-                , windowWidth = op.windowWidth
-                , adpter = op.adpter
-                , adpterLength = 0
-                , type = op.type
-                , scheduleCls = ''
-                , i = 0
+            var op = this.options,
+                scheduleCls  = '',
+                intervalDate = op.intervalDate,
+                newDateYMD   = op.newSystemDate || op.newDateYMD,
+                systemDate   = op.systemDate,
+                displayMonthNumber = op.displayMonthNumber,
+                getIntervalDate = op.getIntervalDate,
+                wScroll      = op.wScroll,
+                windowWidth  = op.windowWidth,
+                adpterLength = 0,
+                type      = op.type,
+                weekName  = op.weekName,
+                texts     = op.texts,
+                todayText = texts.today,
+                startText = texts.start,
+                endText   = texts.end,
+                adpter    = op.adpter,
+                i = 0
                 ;
 
             if (type === 'schedule') {
@@ -700,7 +505,10 @@
                     adpterLength = $.isArray(adpter) ? adpter.length : 0;
                 }
             }
+
+            // 日期
             var  _html = '<article class="widget-select-date-iscroll' + scheduleCls + '" id="' + op.target + (wScroll ? '" style="width:' + windowWidth*displayMonthNumber + 'px;overflow:hidden;"' : '"') +'>';
+
             for (; i < displayMonthNumber; i++) {
                 
                 var newDate        = new Date(newDateYMD.getYear, newDateYMD.getMonth + i + (this._firstRender ? -1 : 0))
@@ -714,9 +522,9 @@
                 // 需要填补后面空位
                 filling = filling % 7 === 0 ? filling : filling + (7 - filling % 7); 
 
-                _html += '<div class="widget-select-date" data-date="' + year + '-' + month + '"' + (wScroll ? ' style="float:left;width:' + windowWidth + 'px;"' : '') + '>' + 
+                _html += '<div class="widget-select-date" data-date="' + year + '-' + month + '"' + (wScroll ? ' style="float:left;width:100vw"' : '') + '>' + 
                          '  <h3 class="widget-select-date-h3">' + ( year != op.newDateYMD.getYear ? (year + '年') : '' )+ month +'月</h3>' + 
-                         '  <table width="100%" class="widget-select-date-table">';
+                         '  <table width="100%" class="widget-select-date-table"><tbody>';
                                 for (var n = 0; n < filling; n++) {
                                     if (n%7 === 0) { //计算有多少行tr
                                         _html += '<tr>';
@@ -827,7 +635,7 @@
                                                     , attrDate   = ' data-date="' + _year_month_day + '"'
                                                     , attrValue  = ' data-value="' + _day + '"'
                                                     , attrWeek   = ' data-week="' + _week + '"'
-                                                    , attrSelect = ' data-select="' + ( _defalut ? _defalut : _select ) + '"';
+                                                    , attrSelect = ' data-select="' + ( _defalut || _select ) + '"';
                                                     ;
                                                 _html += '<td' + cls + attrDate + attrValue + attrWeek + attrSelect  + '>' + (scheduleTdCls !== '' ? '<span class="day" ' + scheduleAttr + '></span>' : '') + '</td>';
                                             }
@@ -835,10 +643,12 @@
                                         _html += '</tr>';
                                     }
                                 }
-                _html += '  </table>' +
-                         ' </div>';
+                _html += '</tbody></table></div>';
             }
             _html += '</article>';
+
+
+            // 星期title
             _html += '<table width="100%" class="widget-select-date-table-header"><tr>';
 
             for (var w = 0, len = weekName.length; w < len; w++) {
@@ -846,6 +656,7 @@
             }
 
             _html += '</tr></table>';
+
             return _html;
         },
         // 销毁calendarjs
@@ -855,40 +666,6 @@
         // 刷新calendarjs
         refresh: function (refresh) {
             // 
-        },
-        on: function (type, fn) {
-            if ( !this._events[type] ) {
-                this._events[type] = [];
-            }
-            
-            this._events[type].push(fn);
-        },
-        off: function (type, fn) {
-            if ( !this._events[type] ) {
-                return;
-            }
-
-            var index = this._events[type].indexOf(fn);
-
-            if ( index > -1 ) {
-                this._events[type].splice(index, 1);
-            }
-        },
-        trigger: function (type) {
-            if ( !this._events[type] ) {
-                return;
-            }
-
-            var i = 0,
-                l = this._events[type].length;
-
-            if ( !l ) {
-                return;
-            }
-
-            for ( ; i < l; i++ ) {
-                this._events[type][i].apply(this, [].slice.call(arguments, 1));
-            }
         },
         // 点击事件
         evt: function Events(element, type, eventHandle, flg){

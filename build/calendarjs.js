@@ -1,7 +1,7 @@
 /**
  * calendarjs
  * xisa
- * 1.1.2(2014-2016)
+ * 0.3.0(2014-2016)
  */
  /*
     依赖iscroll 
@@ -162,7 +162,7 @@
             if (index !== 1) {
                 var _d = $( "#" + this.options.target).find('.widget-select-date:nth-child(2)').attr('data-date')
                     , _dArr = _d.split('-')
-                    , _m = parseInt(_dArr[1]) + (index == 2 ? 1 : -1)
+                    , _m = +_dArr[1] + (index == 2 ? 1 : -1)
                     , newSystemDate = new Date( _dArr[0], _m-1, 1)
                     ;
 
@@ -201,7 +201,7 @@
             if (wScroll) {
                 is.on('scrollStart', function () {
                     target.addClass('widget-select-date-td-bdr');
-                    self.options.clickPage = false;
+                    op.clickPage = false;
                     // if (type === 'schedule') {
                     //     //
                     // }
@@ -230,7 +230,7 @@
             // 点击事件
             evt.bind(target, '.widget-select-date-table tr td', "click", function (dom) {
                 // 是否是点击切换到上下月
-                self.options.isClickScroll = true;
+                op.isClickScroll = true;
                 var attrSelect = 'data-select'
                     , firstClickDate = target.find('.click').attr('data-date')  // 第一次点击
                     , endClickDate = dom.attr('data-date')            // 结束日期
@@ -253,7 +253,7 @@
                                 data = dataF.values.data;
                             }
                         }
-                        var newDateYearMonth = $( "#" + self.options.target).find('.widget-select-date:nth-child(2)').attr('data-date').split('-');
+                        var newDateYearMonth = $( "#" + op.target).find('.widget-select-date:nth-child(2)').attr('data-date').split('-');
 
                         var endClickDateArr = endClickDate.split('-');
 
@@ -261,20 +261,20 @@
                             
                             // 重新渲染dom
                             setTimeout(function () {
-                                self.options.isClickScroll = false;
+                                op.isClickScroll = false;
                                 // false滚动回调方法不会执行
                                 self.slideScrollPrev(true);
                             }, 6);
                             
                         } else if (new Date(endClickDateArr[0], (Math.abs(endClickDateArr[1]) - 1), endClickDateArr[2]).getTime() > new Date(newDateYearMonth[0], newDateYearMonth[1], 0).getTime()) {
                             setTimeout(function () {
-                                self.options.isClickScroll = false;
+                                op.isClickScroll = false;
                                 // false滚动回调方法不会执行
                                 self.slideScrollNext(true);
                             }, 6);
                         }
 
-                        self.options.endClickDate = endClickDate;
+                        op.endClickDate = endClickDate;
                         callback({
                             year: endClickDate.split('-')[0],
                             month: endClickDate.split('-')[1],
@@ -389,9 +389,9 @@
         _getIntervalDate: function (startDate, endDate) {
             var intervalDay      = this._getDateDiff(endDate, startDate) // 计算间隔有多少天
                 , startDateToArr = startDate.split('-')
-                , year           = parseInt( startDateToArr[0] )
-                , month          = parseInt( startDateToArr[1] ) - 1
-                , day            = parseInt( startDateToArr[2] )
+                , year           = +startDateToArr[0]
+                , month          = +startDateToArr[1] - 1
+                , day            = +startDateToArr[2]
                 ;
             for (var arr = [], m = 0; m <= intervalDay; m++ ) {
                 var newDate = new Date(year, month, day + m);
@@ -649,13 +649,13 @@
 
 
             // 星期title
-            _html += '<table width="100%" class="widget-select-date-table-header"><tr>';
+            _html += '<table width="100%" class="widget-select-date-table-header"><thead><tr>';
 
             for (var w = 0, len = weekName.length; w < len; w++) {
                 _html += '<th>' + weekName[w] + '</th>';
             }
 
-            _html += '</tr></table>';
+            _html += '</tr></thead></table>';
 
             return _html;
         },

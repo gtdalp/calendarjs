@@ -80,6 +80,7 @@
         // 入口
         render: function () {
             // 创建iscroll
+            this._createIscroll();
         },
         // 滚动动画
         scrollAnimation: function (index, flg) {

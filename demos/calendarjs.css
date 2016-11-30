@@ -1,0 +1,57 @@
+.widget-ui-calendarjs{
+    width:98vw;
+    margin-left:1vw;
+    font-size:12px;
+    font-family: 'Arial';
+    text-align: center;
+}
+/*begin header*/
+.widget-ui-calendarjs-header{
+    overflow:hidden;
+}
+.widget-ui-calendarjs-header>span{
+    float:left;
+    width: 14vw;
+    height:35px;
+    line-height: 35px;
+    color:#333;
+}
+/*end header*/
+
+/*table date*/
+.widget-ui-calendarjs-date>tbody>tr>td{
+    width: 14vw;
+    height: 14vw;
+}
+.calendarjs-date-border{
+    width: calc(14vw - 4px);
+    width: -webkit-calc(14vw - 4px);
+    height: calc(14vw - 4px);
+    height: -webkit-calc(14vw - 4px);
+    line-height: calc(14vw - 4px);
+    line-height: -webkit-calc(14vw - 4px);
+    margin:2px;
+    border-radius:50%;
+    background:#ccc;
+    font-size:14px;
+    color:#010101;
+}
+/*点击样式*/
+.widget-ui-calendarjs-date>tbody>tr>td.click>.calendarjs-date-border{
+    width: calc(14vw - 6px);
+    width: -webkit-calc(14vw - 6px);
+    height: calc(14vw - 6px);
+    height: -webkit-calc(14vw - 6px);
+    line-height: calc(14vw - 6px);
+    line-height: -webkit-calc(14vw - 6px);
+    border:1px solid #EF4F37;
+}
+/*系统当日样式*/
+.widget-ui-calendarjs-date>tbody>tr>td.today>.calendarjs-date-border{
+    background:#EF4F37;
+    color:#fff;
+}
+/*小于系统时间颜色*/
+.widget-ui-calendarjs-date>tbody>tr>td.yesterday>.calendarjs-date-border{
+    color:#999;
+}

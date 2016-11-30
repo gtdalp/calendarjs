@@ -5,68 +5,135 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<title>日期区间选择组件</title>
+<title>日期组件</title>
 <link rel="stylesheet" type="text/css" href="../src/css/base.css" />
 <link rel="stylesheet" type="text/css" href="calendarjs.css" />
 <script src="../src/jslib/require.js"></script>
 </head>
 <body>
-<style type="text/css">
-
-</style>
-
-<section id="calendarjs" class="calendarjs"></section>
+<section class="widget-ui-calendarjs">
+    <div class="widget-ui-calendarjs-header">
+        <span>日</span>
+        <span>一</span>
+        <span>二</span>
+        <span>三</span>
+        <span>四</span>
+        <span>五</span>
+        <span>六</span>
+    </div>
+    <table width="100%" class="widget-ui-calendarjs-date">
+        <tbody>
+            <tr>
+                <td>
+                    <div class="calendarjs-date-border">1</div>
+                </td>
+                <td class="click">
+                    <div class="calendarjs-date-border">1</div>
+                </td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+                <td>6</td>
+                <td>7</td>
+            </tr>
+            <tr>
+                <td class="today">
+                    <div class="calendarjs-date-border">1</div>
+                </td>
+                <td>
+                    <div class="calendarjs-date-border">1</div>
+                </td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+                <td>6</td>
+                <td>7</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+<div class="solarlunar"></div>
 <script>
-require(['zepto', 'iscroll', 'calendarjs'], function(){
-    var Calendarjs = require('calendarjs');
-	var calendarjs = new Calendarjs('#calendarjs', {
-		type: 'schedule',    // 日程
-        // systemDate : '2016-6-2',
-        weekName: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
-        adpter: function () {
-            var data = [
-                {
-                    date: '2016-7-6',
-                    values: {
-                        des: '返款',
-                        data: {
-                            productName: '西撒作品',
-                            pic: 1000
-                        }
-                    }
-                },
-                {
-                    date: '2016-7-20',
-                    values: {
-                        des: '返款',
-                        text: '10000元',
-                        data: {
-                            productName: '西撒延时作品',
-                            pic: 110000
-                        }
-                    }
-                }
-            ];
-            return data;
-        },
-        callback: function(data){
-            console.log(data);
-            // if (data.data) {
-            //     var o = data.data;
-            //     $('#productName').html(o.productName);
-            //     $('#productPic').html(o.pic);
-            // }
-            // $('#now-date').html(data.year + ' 年 ' + data.month + ' 月').attr('date-value', data.date);
-        }
-    });
+require(['zepto', 'iscroll', 'calendarjs', 'calendar'], function(){
+var calendar = require('calendar');
+['D54C20', 'CF4857', '81628C', '1C6A81', '13A99E', 'F4634E', '1D7C5A', 'CC9966', 'CC99CC', 'FF9999', '663366', 'FF9933']
+    // 功能
+    /*
+    第二版本需要农历
+    二十四节气 常见节日
+
+    过期日期是否显示灰色
+
+    是否需要自动补全
+
+    日期的宽度是根据显示区域的宽度来定
+
+    */
+ //    var Calendarjs = require('calendarjs');
+	// var calendarjs = new Calendarjs('#calendarjs', {
+	// 	type: 'schedule',    // 日程
+ //        // systemDate : '2016-6-2',
+ //        weekName: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+ //        adpter: function () {
+ //            var data = [
+ //                {
+ //                    date: '2016-7-6',
+ //                    values: {
+ //                        des: '返款',
+ //                        data: {
+ //                            productName: '西撒作品',
+ //                            pic: 1000
+ //                        }
+ //                    }
+ //                },
+ //                {
+ //                    date: '2016-7-20',
+ //                    values: {
+ //                        des: '返款',
+ //                        text: '10000元',
+ //                        data: {
+ //                            productName: '西撒延时作品',
+ //                            pic: 110000
+ //                        }
+ //                    }
+ //                }
+ //            ];
+ //            return data;
+ //        },
+ //        callback: function(data){
+ //            console.log(data);
+ //            // if (data.data) {
+ //            //     var o = data.data;
+ //            //     $('#productName').html(o.productName);
+ //            //     $('#productPic').html(o.pic);
+ //            // }
+ //            // $('#now-date').html(data.year + ' 年 ' + data.month + ' 月').attr('date-value', data.date);
+ //        }
+ //    });
+ /**公历年月日转农历数据 返回json**/
+calendar.solar2lunar(1987,11,01);
+
+/**农历年月日转公历年月日**/
+calendar.lunar2solar(1987,9,10);
+
+//调用以上方法后返回类似如下object（json）具体以上就不需要解释了吧！
+//c开头的是公历各属性值 l开头的自然就是农历咯 gz开头的就是天干地支纪年的数据啦~
+
+
+var lunar = calendar.solar2lunar();
+    $('.solarlunar').html('<strong>调用代码示例Demo</strong><br />阳历：'+lunar.cYear + '年' +lunar.cMonth +  '月' + lunar.cDay +'日（'+lunar.astro+'）<br />农历：'+lunar.lYear + '年' +lunar.IMonthCn+lunar.IDayCn+'，'+lunar.gzYear+'年'+lunar.gzMonth+'月'+lunar.gzDay+'日（'+lunar.Animal+'年）');
+
+
 });
 require.config({
     paths: {
         "zepto": "../src/jslib/zepto.min",
         "iscroll": "../src/jslib/iscroll.min",
+        "calendar": '../src/jslib/calendar',
         "calendarjs": "../build/calendarjs"
     }
 });
 </script>
+
 </body>
 </html>

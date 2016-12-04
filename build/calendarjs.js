@@ -43,7 +43,8 @@
         render: function () {
 
             // 创建头部(星期名称)
-            this.createWeekName();
+            this.createWeekNameTemplate();
+            
             // this._createIscroll();
             this.createTemplate();
         },
@@ -193,14 +194,14 @@
             return arr;
         },
         // 得到某个月份的天数
-        _DayNumOfMonth: function (Year, Month) {
+        getMonthDay: function (Year, Month) {
             return new Date(Year, Month, 0).getDate();
         },
         _createIscroll: function () {
             //
         },
         // 创建头部(星期名称)
-        createWeekName: function () {
+        createWeekNameTemplate: function () {
             var op = this.options, id = $('#' + this.id), i = 0,
                 weekName = op.weekName,
                 len = weekName.length,
@@ -216,10 +217,37 @@
 
             // 创建星期名称
             id.prepend(html);
-        },    
+        },
+        // 创建月份模板 y年 m月(月份为系统月份)
+        createMonthTemplate: function (y, m) {
+            var op = this.options, i = 0, n = 0, m = m - 1, day,
+                // 当前年月
+                len = this.getMonthDay(y, m),
+                html = '';
+            
+            for (; i <= 35; i++) {
+                // 一个星期
+                if (i % 7 === 0) {
+                    html += '<tr>';
+                } else {
+                    day = new Date(y, m, i);
+                    // console.log(day);
+                    // 一个星期里面的每一天
+                    html += '<td>';
+                    html += '<div class="calendarjs-date-border">' + day.getDate() + '</div>';
+                    html += '<div class="lunar-calendar">' + day.getFullYear() + '</div>';
+                    html += '</td>';
+                }
+                
+                // 一个星期
+                if (i % 7 === 0) html += '</tr>';
+
+            }
+            return html;
+        },
         // 创建模板
         createTemplate: function () {
-            var op = this.options, i = 0,
+            var op = this.options, i = 0, id = $('#' + this.id),
                 // 系统时间
                 systemDate = op.systemDate,
                 // 每个月背景颜色
@@ -232,8 +260,12 @@
                 html = '';
 
             // header
-            html += '';
-            return html;
+            html += '<table width="100%" class="widget-ui-calendarjs-date"><tbody>';
+            html += this.createMonthTemplate(2016, 12);
+            html += '</tbody></table>';
+            
+            // 创建星期名称
+            id.append(html);
         },
         // 销毁calendarjs
         destroy: function () {

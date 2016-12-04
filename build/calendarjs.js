@@ -220,7 +220,7 @@
         },
         // 创建月份模板 y年 m月(月份为系统月份)
         createMonthTemplate: function (y, m) {
-            var op = this.options, i = 0, n = 0, m = m - 1, day,
+            var op = this.options, i = 0, n = 0, m = m - 1, date, week,
                 // 当前年月
                 len = this.getMonthDay(y, m),
                 html = '';
@@ -230,13 +230,20 @@
                 if (i % 7 === 0) {
                     html += '<tr>';
                 } else {
-                    day = new Date(y, m, i);
-                    // console.log(day);
-                    // 一个星期里面的每一天
+                    date = new Date(y, m, i);
+                    week = date.getDay();
                     html += '<td>';
-                    html += '<div class="calendarjs-date-border">' + day.getDate() + '</div>';
-                    html += '<div class="lunar-calendar">' + day.getFullYear() + '</div>';
+                    // 当月第一天属于星期几
+                    if (i > week) {
+
+                        // 一个星期里面的每一天
+                        html += '<div class="calendarjs-date-border">' + date.getDate() + '</div>';
+                        html += '<div class="lunar-calendar">' + date.getFullYear() + '</div>';
+                    } else {
+                        //
+                    }
                     html += '</td>';
+                    
                 }
                 
                 // 一个星期

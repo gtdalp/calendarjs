@@ -60,10 +60,27 @@
 <script>
 require(['zepto', 'iscroll', 'calendarjs', 'calendar'], function(){
 var calendar = require('calendar');
+var Calendarjs = require('calendarjs');
+
+var calendarjs = new Calendarjs('#widget-ui-calendarjs', {
+    // 系统时间
+    systemDate : '2016-6-2',
+    // 每个月背景颜色
+    style: ['D54C20', 'CF4857', '81628C', '1C6A81', '13A99E', 'F4634E', '1D7C5A', 'CC9966', 'CC99CC', 'FF9999', '663366', 'FF9933'],
+    // 星期名称
+    weekName: ['周日', '周一', '周二', '周三', '周四', '周五'],
+    // 是否显示农历
+    isLunarDate: true,
+    // 是否显示农历节日
+    isHoliday: true,
+    cb: function (data) {
+        // 
+    }
+});
 
 new IScroll('.widget-ui-calendarjs');
 
-['D54C20', 'CF4857', '81628C', '1C6A81', '13A99E', 'F4634E', '1D7C5A', 'CC9966', 'CC99CC', 'FF9999', '663366', 'FF9933']
+
     // 功能
     /*
     第二版本需要农历

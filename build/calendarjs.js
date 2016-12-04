@@ -35,14 +35,17 @@
         version: '0.3.0',
         // 初始化
         init: function (options) {
-            
+            this.options = options;
             // 执行render
             this.render();
         },
         // 入口
         render: function () {
-            // 创建iscroll
-            this._createIscroll();
+
+            // 创建头部(星期名称)
+            this.createWeekName();
+            // this._createIscroll();
+            this.createTemplate();
         },
         // 滚动动画
         scrollAnimation: function (index, flg) {
@@ -196,11 +199,41 @@
         _createIscroll: function () {
             //
         },
-        _createTemplate: function () {
+        // 创建头部(星期名称)
+        createWeekName: function () {
+            var op = this.options, id = $('#' + this.id), i = 0,
+                weekName = op.weekName,
+                len = weekName.length,
+                html = '';
 
-            //
+            html += '<div class="widget-ui-calendarjs-header">';
 
-            return _html;
+            for (; i < len; i++) {
+                html += '<span>' + weekName[i] + '</span>';
+            }
+
+            html += '</div>';
+
+            // 创建星期名称
+            id.prepend(html);
+        },    
+        // 创建模板
+        createTemplate: function () {
+            var op = this.options, i = 0,
+                // 系统时间
+                systemDate = op.systemDate,
+                // 每个月背景颜色
+                bgStyle = op.bgStyle,
+                // 是否显示农历
+                isLunarDate = op.isLunarDate,
+                // 是否显示农历节日
+                isHoliday = op.isHoliday,
+                // 模板
+                html = '';
+
+            // header
+            html += '';
+            return html;
         },
         // 销毁calendarjs
         destroy: function () {

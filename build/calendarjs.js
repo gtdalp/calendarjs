@@ -197,6 +197,10 @@
         getMonthDay: function (Year, Month) {
             return new Date(Year, Month, 0).getDate();
         },
+        // 获取第一个月第一天是星期几
+        getFirstDayWeek = function (Year, Month) {
+            return new Date(Year, Month, 1).getDay();
+        },
         _createIscroll: function () {
             //
         },
@@ -220,36 +224,37 @@
         },
         // 创建月份模板 y年 m月(月份为系统月份)
         createMonthTemplate: function (y, m) {
-            var op = this.options, i = 0, n = 0, m = m - 1, date, week,
+            var op = this.options, i = 0, n = 0, m = m - 1, week,
                 // 当前年月
                 len = this.getMonthDay(y, m),
+                firstDay = this.getMonthDay(y, m, 1),
                 html = '';
-            
-            for (; i <= 35; i++) {
-                // 一个星期
-                if (i % 7 === 0) {
-                    html += '<tr>';
-                } else {
-                    date = new Date(y, m, i);
-                    week = date.getDay();
-                    html += '<td>';
-                    // 当月第一天属于星期几
-                    if (i > week) {
+            console.log(len)
+            // for (; i <= 35; i++) {
+            //     // 一个星期
+            //     if (i % 7 === 0) {
+            //         html += '<tr>';
+            //     } else {
+            //         date = new Date(y, m, i);
+            //         week = date.getDay();
+            //         html += '<td>';
+            //         // 当月第一天属于星期几
+            //         if (i > week) {
 
-                        // 一个星期里面的每一天
-                        html += '<div class="calendarjs-date-border">' + date.getDate() + '</div>';
-                        html += '<div class="lunar-calendar">' + date.getFullYear() + '</div>';
-                    } else {
-                        //
-                    }
-                    html += '</td>';
+            //             // 一个星期里面的每一天
+            //             html += '<div class="calendarjs-date-border">' + date.getDate() + '</div>';
+            //             html += '<div class="lunar-calendar">' + date.getFullYear() + '</div>';
+            //         } else {
+            //             //
+            //         }
+            //         html += '</td>';
                     
-                }
+            //     }
                 
-                // 一个星期
-                if (i % 7 === 0) html += '</tr>';
+            //     // 一个星期
+            //     if (i % 7 === 0) html += '</tr>';
 
-            }
+            // }
             return html;
         },
         // 创建模板

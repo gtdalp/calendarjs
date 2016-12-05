@@ -218,36 +218,39 @@
             // 创建星期名称
             id.prepend(html);
         },
-        // 创建月份模板 y年 m月(月份为系统月份)
+        // 创建月份模板 y年 m月
         createMonthTemplate: function (y, m) {
-            var op = this.options, i = 0, n = 0, m = m - 1, date, week,
-                // 当前年月
+            var op = this.options, i = 0, n = 0, filling = 35, date, week,
+                // 得到某个月份的天数
                 len = this.getMonthDay(y, m),
                 html = '';
-            
-            for (; i <= 35; i++) {
+
+                console.log(len)
+            // 需要填补后面空位
+            filling = len % 7 === 0 ? len : len + (7 - len % 7); 
+
+            for (; i < filling; i++) {
                 // 一个星期
                 if (i % 7 === 0) {
                     html += '<tr>';
-                } else {
-                    date = new Date(y, m, i);
-                    week = date.getDay();
-                    html += '<td>';
-                    // 当月第一天属于星期几
-                    if (i > week) {
-
-                        // 一个星期里面的每一天
-                        html += '<div class="calendarjs-date-border">' + date.getDate() + '</div>';
-                        html += '<div class="lunar-calendar">' + date.getFullYear() + '</div>';
-                    } else {
-                        //
+                    // 循环一周
+                    for ( n = i; n < (i + 7) ; n++ ) {
+                        date = new Date(y, m-1, n);
+                        week = date.getDay();
+                        html += '<td>';
+                        // 当月第一天属于星期几
+                        if (n < week || n > len ) {
+                            console.log(n)
+                            
+                        } else {
+                            // 一个星期里面的每一天
+                            html += '<div class="calendarjs-date-border">' + date.getDate() + '</div>';
+                            html += '<div class="lunar-calendar">' + date.getFullYear() + '</div>';
+                        }
+                        html += '</td>';
                     }
-                    html += '</td>';
-                    
+                    html += '</tr>';
                 }
-                
-                // 一个星期
-                if (i % 7 === 0) html += '</tr>';
 
             }
             return html;

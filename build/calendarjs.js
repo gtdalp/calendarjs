@@ -220,10 +220,11 @@
         },
         // 创建月份模板 y年 m月
         createMonthTemplate: function (y, m) {
-            var op = this.options, i = 0, n = 0, filling = 35, date, week,
+            var op = this.options, i = 0, n = 0, filling = 35, date, week, y, d,
                 // 得到某个月份的天数
                 len = this.getMonthDay(y, m),
                 firstDayWeek = new Date(y, m-1, 1).getDay() - 1,
+                cls = '',
                 html = '';
                 console.log(firstDayWeek)
             // 需要填补后面空位
@@ -237,17 +238,21 @@
                     for ( n = i; n < (i + 7) ; n++ ) {
                         date = new Date(y, m-1, n-firstDayWeek);
                         week = date.getDay();
-                        html += '<td>';
-                        // 当月第一天属于星期几
-                        // if (n < week || n > len ) {
-                        //      // html += n;
+                        d = date.getDate();
+                        y = date.getFullYear();
+                        cls = '';
+                        console.log(i)
+                        // 昨天
+                        if (i === 0 && d > 10) {
+                            cls = ' class="yesterday"';
+                        } else if ((i/7) >= 4 && d < 10){
                             
-                        // } else {
-                            
-                        // }
+                            cls = ' class="tomorrow"';
+                        }
+                        html += '<td' + cls + '>';
                         // 一个星期里面的每一天
-                        html += '<div class="calendarjs-date-border">' + date.getDate() + '</div>';
-                        html += '<div class="lunar-calendar">' + date.getFullYear() + '</div>';
+                        html += '<div class="calendarjs-date-border">' + d + '</div>';
+                        html += '<div class="lunar-calendar">' + y + '</div>';
                         html += '</td>';
                     }
                     html += '</tr>';
@@ -272,7 +277,7 @@
 
             // header
             html += '<table width="100%" class="widget-ui-calendarjs-date"><tbody>';
-            html += this.createMonthTemplate(2016, 11);
+            html += this.createMonthTemplate(2016, 12);
             html += '</tbody></table>';
             
             // 创建星期名称

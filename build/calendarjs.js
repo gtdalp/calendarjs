@@ -223,9 +223,9 @@
             var op = this.options, i = 0, n = 0, filling = 35, date, week,
                 // 得到某个月份的天数
                 len = this.getMonthDay(y, m),
+                firstDayWeek = new Date(y, m-1, 1).getDay() - 1,
                 html = '';
-
-                console.log(len)
+                console.log(firstDayWeek)
             // 需要填补后面空位
             filling = len % 7 === 0 ? len : len + (7 - len % 7); 
 
@@ -235,18 +235,19 @@
                     html += '<tr>';
                     // 循环一周
                     for ( n = i; n < (i + 7) ; n++ ) {
-                        date = new Date(y, m-1, n);
+                        date = new Date(y, m-1, n-firstDayWeek);
                         week = date.getDay();
                         html += '<td>';
                         // 当月第一天属于星期几
-                        if (n < week || n > len ) {
-                            console.log(n)
+                        // if (n < week || n > len ) {
+                        //      // html += n;
                             
-                        } else {
-                            // 一个星期里面的每一天
-                            html += '<div class="calendarjs-date-border">' + date.getDate() + '</div>';
-                            html += '<div class="lunar-calendar">' + date.getFullYear() + '</div>';
-                        }
+                        // } else {
+                            
+                        // }
+                        // 一个星期里面的每一天
+                        html += '<div class="calendarjs-date-border">' + date.getDate() + '</div>';
+                        html += '<div class="lunar-calendar">' + date.getFullYear() + '</div>';
                         html += '</td>';
                     }
                     html += '</tr>';
@@ -271,7 +272,7 @@
 
             // header
             html += '<table width="100%" class="widget-ui-calendarjs-date"><tbody>';
-            html += this.createMonthTemplate(2016, 12);
+            html += this.createMonthTemplate(2016, 11);
             html += '</tbody></table>';
             
             // 创建星期名称

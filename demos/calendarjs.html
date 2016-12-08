@@ -129,6 +129,13 @@ new IScroll('.widget-ui-calendarjs');
 calendar.solar2lunar(1987,11,01);
 
 /**农历年月日转公历年月日**/
+for(var i =1;i<32;i++){
+    var Term = calendar.solar2lunar(2016,12,i).Term;
+    if(Term){
+        console.log(calendar.solar2lunar(2016,12,i))
+        console.log(Term)
+    }
+}
 calendar.lunar2solar(2016,9,10);
 
 //调用以上方法后返回类似如下object（json）具体以上就不需要解释了吧！
@@ -138,6 +145,7 @@ calendar.lunar2solar(2016,9,10);
 var lunar = calendar.solar2lunar();
     console.log('调用代码示例Demo\n阳历：'+lunar.cYear + '年' +lunar.cMonth +  '月' + lunar.cDay +'日（'+lunar.astro+'）\n农历：'+lunar.lYear + '年' +lunar.IMonthCn+lunar.IDayCn+'，'+lunar.gzYear+'年'+lunar.gzMonth+'月'+lunar.gzDay+'日（'+lunar.Animal+'年）');
 });
+
 require.config({
     paths: {
         "zepto": "../src/jslib/zepto.min",

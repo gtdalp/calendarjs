@@ -82,6 +82,7 @@
     border:1px solid #EF4F37;
     font-family:'Arial';
 }
+.widget-ui-calendarjs-date>tbody>tr>td.today>.lunar-calendar,
 .widget-ui-calendarjs-date>tbody>tr>td.click>.lunar-calendar{
     display:none;
 }

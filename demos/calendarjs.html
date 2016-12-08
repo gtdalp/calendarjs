@@ -8,6 +8,7 @@
 <title>日期组件</title>
 <link rel="stylesheet" type="text/css" href="../src/css/base.css" />
 <link rel="stylesheet" type="text/css" href="calendarjs.css" />
+<script src="../src/jslib/calendar.js"></script>
 <script src="../src/jslib/require.js"></script>
 </head>
 <body>
@@ -48,10 +49,8 @@
         </tbody>
     </table> -->
 </section>
-<div class="solarlunar"></div>
 <script>
-require(['zepto', 'iscroll', 'calendarjs', 'calendar'], function(){
-var calendar = require('calendar');
+require(['zepto', 'iscroll', 'calendarjs'], function(){
 var Calendarjs = require('calendarjs');
 
 var calendarjs = new Calendarjs('.widget-ui-calendarjs', {
@@ -130,22 +129,19 @@ new IScroll('.widget-ui-calendarjs');
 calendar.solar2lunar(1987,11,01);
 
 /**农历年月日转公历年月日**/
-calendar.lunar2solar(1987,9,10);
+calendar.lunar2solar(2016,9,10);
 
 //调用以上方法后返回类似如下object（json）具体以上就不需要解释了吧！
 //c开头的是公历各属性值 l开头的自然就是农历咯 gz开头的就是天干地支纪年的数据啦~
 
 
 var lunar = calendar.solar2lunar();
-    $('.solarlunar').html('<strong>调用代码示例Demo</strong><br />阳历：'+lunar.cYear + '年' +lunar.cMonth +  '月' + lunar.cDay +'日（'+lunar.astro+'）<br />农历：'+lunar.lYear + '年' +lunar.IMonthCn+lunar.IDayCn+'，'+lunar.gzYear+'年'+lunar.gzMonth+'月'+lunar.gzDay+'日（'+lunar.Animal+'年）');
-
-
+    console.log('调用代码示例Demo\n阳历：'+lunar.cYear + '年' +lunar.cMonth +  '月' + lunar.cDay +'日（'+lunar.astro+'）\n农历：'+lunar.lYear + '年' +lunar.IMonthCn+lunar.IDayCn+'，'+lunar.gzYear+'年'+lunar.gzMonth+'月'+lunar.gzDay+'日（'+lunar.Animal+'年）');
 });
 require.config({
     paths: {
         "zepto": "../src/jslib/zepto.min",
         "iscroll": "../src/jslib/iscroll.min",
-        "calendar": '../src/jslib/calendar',
         "calendarjs": "../build/calendarjs"
     }
 });

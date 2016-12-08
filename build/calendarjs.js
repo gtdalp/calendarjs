@@ -220,7 +220,7 @@
         },
         // 创建月份模板 y年 m月
         createMonthTemplate: function (y, m) {
-            var op = this.options, i = 0, n = 0, filling = 35, date, week, y, d,
+            var op = this.options, i = 0, n = 0, filling = 35, date, week, y, d, month, lunar, lDay, IDayCn, IMonthCn,
                 // 得到某个月份的天数
                 len = this.getMonthDay(y, m),
                 firstDayWeek = new Date(y, m-1, 1).getDay() - 1,
@@ -239,7 +239,16 @@
                         date = new Date(y, m-1, n-firstDayWeek);
                         week = date.getDay();
                         d = date.getDate();
+                        month = date.getMonth() + 1;
                         y = date.getFullYear();
+                        // 公历年月日转农历数据
+                        lunar = calendar.solar2lunar(y, month, d);
+                        // 农历的第一天
+                        lDay = lunar.lDay;
+                        // 农历天
+                        IDayCn = lunar.IDayCn;
+                        // 农历月份
+                        IMonthCn = lunar.IMonthCn;
                         cls = '';
                         console.log(i)
                         // 昨天
@@ -249,10 +258,10 @@
                             
                             cls = ' class="tomorrow"';
                         }
-                        html += '<td' + cls + '>';
+                        html += '<td' + cls + ' data-day="' + y + '-' + month  + '-' + d + '">';
                         // 一个星期里面的每一天
                         html += '<div class="calendarjs-date-border">' + d + '</div>';
-                        html += '<div class="lunar-calendar">' + y + '</div>';
+                        html += '<div class="lunar-calendar">' + (lDay == 1 ? IMonthCn : IDayCn) + '</div>';
                         html += '</td>';
                     }
                     html += '</tr>';

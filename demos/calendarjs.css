@@ -7,8 +7,26 @@
 }
 /*begin header*/
 .widget-ui-calendarjs-header{
+    position:relative;
+    height:35px;
     margin-bottom:5px;
-    overflow:hidden;
+    background:#CF4857;
+}
+.widget-ui-calendarjs-header::before,
+.widget-ui-calendarjs-header::after{
+    display: block;
+    position: absolute;
+    top:0;
+    width:1vw;
+    height:35px;
+    background: inherit;
+    content:'';
+}
+.widget-ui-calendarjs-header::before{
+    left:-1vw;
+}
+.widget-ui-calendarjs-header::after{
+    right:-1vw;
 }
 .widget-ui-calendarjs-header>span{
     float:left;
@@ -16,7 +34,6 @@
     height:35px;
     line-height: 35px;
     color:#fff;
-    background:#CF4857;
 }
 .lunar-calendar{
     position:absolute;
@@ -30,6 +47,7 @@
     overflow:hidden;
     font-size:12px;
     color:#999;
+    transform:scale(0.8);
 }
 /*end header*/
 

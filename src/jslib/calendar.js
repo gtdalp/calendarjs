@@ -15,7 +15,7 @@
   } else if (typeof exports === 'object') {
     module.exports = factory();
   } else {
-    root.Calendarjs = factory();
+    root.calendar = factory();
   }
 }(this, function() {
     var calendar = {

@@ -8,7 +8,6 @@
 <title>日期组件</title>
 <link rel="stylesheet" type="text/css" href="../src/css/base.css" />
 <link rel="stylesheet" type="text/css" href="calendarjs.css" />
-<script src="../src/jslib/calendar.js"></script>
 <script src="../src/jslib/require.js"></script>
 </head>
 <body>
@@ -51,26 +50,26 @@
 </section>
 <script>
 require(['zepto', 'iscroll', 'calendarjs'], function(){
-var Calendarjs = require('calendarjs');
+    var Calendarjs = require('calendarjs');
 
-var calendarjs = new Calendarjs('.widget-ui-calendarjs', {
-    // 系统时间
-    systemDate : '2016-6-2',
-    // 每个月背景颜色
-    bgStyle: ['D54C20', 'CF4857', '81628C', '1C6A81', '13A99E', 'F4634E', '1D7C5A', 'CC9966', 'CC99CC', 'FF9999', '663366', 'FF9933'],
-    // 星期名称 周日必须在第一位
-    weekName: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
-    // 是否显示农历
-    isLunarDate: true,
-    // 是否显示农历节日
-    isHoliday: true,
-    cb: function (data) {
-        // 
-    }
+    var calendarjs = new Calendarjs('.widget-ui-calendarjs', {
+        // 系统时间
+        systemDate : '2016-6-2',
+        // 每个月背景颜色
+        bgStyle: ['D54C20', 'CF4857', '81628C', '1C6A81', '13A99E', 'F4634E', '1D7C5A', 'CC9966', 'CC99CC', 'FF9999', '663366', 'FF9933'],
+        // 星期名称 周日必须在第一位
+        weekName: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+        // 是否显示农历
+        isLunarDate: true,
+        // 是否显示农历节日
+        isHoliday: true,
+        cb: function (data) {
+            // 
+        }
+    });
+
+    new IScroll('.widget-ui-calendarjs');
 });
-
-new IScroll('.widget-ui-calendarjs');
-
 
     // 功能
     /*
@@ -125,27 +124,8 @@ new IScroll('.widget-ui-calendarjs');
  //            // $('#now-date').html(data.year + ' 年 ' + data.month + ' 月').attr('date-value', data.date);
  //        }
  //    });
- /**公历年月日转农历数据 返回json**/
-calendar.solar2lunar(1987,11,01);
-
-/**农历年月日转公历年月日**/
-for(var i =1;i<32;i++){
-    var Term = calendar.solar2lunar(2016,12,i).Term;
-    if(Term){
-        console.log(calendar.solar2lunar(2016,12,i))
-        console.log(Term)
-    }
-}
-calendar.lunar2solar(2016,9,10);
-
-//调用以上方法后返回类似如下object（json）具体以上就不需要解释了吧！
-//c开头的是公历各属性值 l开头的自然就是农历咯 gz开头的就是天干地支纪年的数据啦~
-
-
-var lunar = calendar.solar2lunar();
-    console.log('调用代码示例Demo\n阳历：'+lunar.cYear + '年' +lunar.cMonth +  '月' + lunar.cDay +'日（'+lunar.astro+'）\n农历：'+lunar.lYear + '年' +lunar.IMonthCn+lunar.IDayCn+'，'+lunar.gzYear+'年'+lunar.gzMonth+'月'+lunar.gzDay+'日（'+lunar.Animal+'年）');
-});
-
+</script>
+<script>
 require.config({
     paths: {
         "zepto": "../src/jslib/zepto.min",

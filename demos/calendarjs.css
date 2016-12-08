@@ -88,12 +88,16 @@
 }
 /*系统当日样式*/
 .widget-ui-calendarjs-date>tbody>tr>td.today>.calendarjs-date-border{
-    background:#EF4F37;
+    background:#CF4857;
     color:#fff;
 }
 /*明天样式*/
 .widget-ui-calendarjs-date>tbody>tr>td.tomorrow>.calendarjs-date-border{
     color:#999;
+}
+/*节假日颜色*/
+.widget-ui-calendarjs-date>tbody>tr>td.holidays>.lunar-calendar{
+    color:#CF4857;
 }
 /*小于系统时间颜色*/
 .widget-ui-calendarjs-date>tbody>tr>td.yesterday>.calendarjs-date-border{

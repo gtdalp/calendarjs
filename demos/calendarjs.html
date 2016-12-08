@@ -54,13 +54,13 @@ require(['zepto', 'iscroll', 'calendarjs'], function(){
 
     var calendarjs = new Calendarjs('.widget-ui-calendarjs', {
         // 系统时间
-        systemDate : '2016-6-2',
+        // systemDate : '2016-6-2',
         // 每个月背景颜色
         bgStyle: ['D54C20', 'CF4857', '81628C', '1C6A81', '13A99E', 'F4634E', '1D7C5A', 'CC9966', 'CC99CC', 'FF9999', '663366', 'FF9933'],
         // 星期名称 周日必须在第一位
         weekName: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
         // 是否显示农历
-        isLunarDate: true,
+        isLunarDate: false,
         // 是否显示农历节日
         isHoliday: true,
         cb: function (data) {

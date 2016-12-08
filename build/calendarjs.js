@@ -1,4 +1,4 @@
-/**
+﻿/**
  * calendarjs
  * xisa
  * 0.3.0(2014-2016)
@@ -611,7 +611,20 @@
         version: '0.3.0',
         // 初始化
         init: function (options) {
-            this.options = options;
+            var nowDate = new Date();
+            this.options = {
+                // 系统时间
+                systemDate : nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + nowDate.getDate(),
+                // 每个月背景颜色
+                bgStyle: ['D54C20', 'CF4857', '81628C', '1C6A81', '13A99E', 'F4634E', '1D7C5A', 'CC9966', 'CC99CC', 'FF9999', '663366', 'FF9933'],
+                // 星期名称 周日必须在第一位
+                weekName: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+                // 是否显示农历
+                isLunarDate: true,
+                // 是否显示农历节日
+                isHoliday: true,
+            }
+            $.extend(true, this.options, options);
             // 执行render
             this.render();
         },
@@ -795,11 +808,12 @@
             id.prepend(html);
         },
         // 创建月份模板 y年 m月
-        createMonthTemplate: function (y, m) {
-            var op = this.options, i = 0, n = 0, filling = 35, date, week, y, d, month, lunar, lDay, IDayCn, IMonthCn, Term, str, holidays, strD, strM, holidaysI,
+        createMonthTemplate: function (y, m, today) {
+            var op = this.options, i = 0, n = 0, filling = 35, date, week, year, day, month, lunar, lDay, IDayCn, IMonthCn, Term, str, holidays, strD, strM, holidaysI,
                 // 得到某个月份的天数
                 len = this.getMonthDay(y, m),
                 firstDayWeek = new Date(y, m-1, 1).getDay() - 1,
+                systemDate = op.systemDate.split('-'),
                 cls = '',
                 html = '';
                 console.log(firstDayWeek)
@@ -815,11 +829,11 @@
                         str = '';
                         date = new Date(y, m-1, n-firstDayWeek);
                         week = date.getDay();
-                        d = date.getDate();
+                        day = date.getDate();
                         month = date.getMonth() + 1;
-                        y = date.getFullYear();
+                        year = date.getFullYear();
                         // 公历年月日转农历数据
-                        lunar = calendar.solar2lunar(y, month, d);
+                        lunar = calendar.solar2lunar(year, month, day);
                         // 24节气
                         Term = lunar.Term;
                         // 农历的第一天
@@ -833,14 +847,13 @@
                         // 是否显示农历二十四节气
                         str = Term || str;
                         
-
                         cls = '';
 
                         // 小于10前面加0
-                        if (d < 10) {
-                            strD = '0' + d; 
+                        if (day < 10) {
+                            strD = '0' + day; 
                         } else {
-                            strD = '' + d;
+                            strD = '' + day;
                         }
                         // 小于10前面加0
                         if (month < 10) {
@@ -853,14 +866,25 @@
                         holidays = calendar.holidays[holidaysI];
 
                         // 昨天
-                        if (i === 0 && d > 10) {
+                        if (i === 0 && day > 10) {
                             cls = ' class="yesterday"';
-                        } else if ((i/7) >= 4 && d < 10){
+                        } 
+                        // 明天
+                        else if ((i/7) >= 4 && day < 10){
                             cls = ' class="tomorrow"';
+                        } 
+                        // 今天
+                        else if (systemDate[0] == year && systemDate[1] == month && systemDate[2] == day) {
+                            cls = ' class="today"';
                         }
-                        html += '<td' + cls + ' data-day="' + y + '-' + month  + '-' + d + '">';
+                        // 节假日
+                        else if (holidays) {
+                            cls = ' class="holidays"';
+                        }
+
+                        html += '<td' + cls + ' data-day="' + year + '-' + month  + '-' + day + '">';
                         // 一个星期里面的每一天
-                        html += '<div class="calendarjs-date-border">' + d + '</div>';
+                        html += '<div class="calendarjs-date-border">' + day + '</div>';
                         html += '<div class="lunar-calendar">' + (holidays || str) + '</div>';
                         html += '</td>';
                     }
@@ -874,7 +898,7 @@
         createTemplate: function () {
             var op = this.options, i = 0, id = $('#' + this.id),
                 // 系统时间
-                systemDate = op.systemDate,
+                systemDate = op.systemDate.split('-'),
                 // 每个月背景颜色
                 bgStyle = op.bgStyle,
                 // 是否显示农历
@@ -884,13 +908,15 @@
                 // 模板
                 html = '';
 
-            // header
-            html += '<table width="100%" class="widget-ui-calendarjs-date"><tbody>';
-            html += this.createMonthTemplate(2016, 12);
-            html += '</tbody></table>';
+            for (var i = 0; i < 3; i++) {
+                html += '<table width="100%" class="widget-ui-calendarjs-date"><tbody>';
+                html += this.createMonthTemplate(systemDate[0], parseInt(systemDate[1]) + (i - 1), systemDate[2]);
+                html += '</tbody></table>';
+            }
+            
             
             // 创建星期名称
-            id.append(html);
+            id.append('<div class="iscroll">' + html + '</div>');
         },
         // 销毁calendarjs
         destroy: function () {

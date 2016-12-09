@@ -705,22 +705,25 @@
         event: function () {
             var dom = '#' + this.id + ' .calendarjs-iscroll';
             
-            var td;
+            var td, self = this;
             this.evt($(dom), 'click', function (d, e) {
                 var iscroll = this.options.iscroll;
                 var max = iscroll.maxScrollX
                 td = $(e.evt.target).parent('td');
                 // 上一个月
                 if (td.hasClass('yesterday')) {
-                    // iscroll.scrollTo(0, 0, 300);
                     setTimeout(function () {
-                        this.slideScrollPrev();
-                    }.bind(this), 305);
+                        iscroll.scrollTo(0, 0, 300);
+                    }, 6);
+                    setTimeout(function () {
+                        self.slideScrollPrev();
+                    }, 305);
                 }
                 // 下一个月
                 if (td.hasClass('tomorrow')) {
-                    
-                    // iscroll.scrollTo(max, 0, 300);
+                    setTimeout(function () {
+                        iscroll.scrollTo(max, 0, 300);
+                    }, 6);
                     setTimeout(function () {
                         this.slideScrollNext();
                     }.bind(this), 305);

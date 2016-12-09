@@ -630,12 +630,10 @@
         },
         // 入口
         render: function () {
-
+            // 创建月份模板
+            this.createTemplate();
             // 创建头部(星期名称)
             this.createWeekNameTemplate();
-            
-            // this._createIscroll();
-            this.createTemplate();
         },
         // 滚动动画
         scrollAnimation: function (index, flg) {
@@ -662,10 +660,26 @@
             }, 301);
         },
         // 滑动到上一个月
-        slideScrollPrev: function (flg) {
+        slideScrollPrev: function () {
+            var op = this.options,
+                id = $('#' + this.id),
+                // 系统时间
+                systemDate = op.systemDate.split('-'),
+                table = id.find('.calendarjs-iscroll .widget-ui-calendarjs-date'),
+                nowYearMonth = table.attr('data-yearmonth').split('-'),
+                html = this.createMonthTemplate(nowYearMonth[0], parseInt(nowYearMonth[1]) - 1);
+
             // 重新赋值滚动到那一页
-            this.options.currentPage = 0;
-            this.scrollAnimation(0, flg);
+            op.currentPage = 1;
+            table.eq(2).remove();
+            id.find('div.calendarjs-iscroll').prepend(html);
+
+            // 销毁之前的iscroll
+            this.options.iscroll.destroy();
+            this.options.iscroll = null;
+
+            // 重新创建iscroll
+            this.createIscroll('#' + this.id);
         },
         // 滑动到下一个月
         slideScrollNext: function (flg) {
@@ -675,91 +689,11 @@
         },
         // 设置日期
         setDate: function (date) {
-            var op = this.options, callback, _d;
-            // 第一次加载滑动可以执行回调
-            if (this._firstRender) {
-                op.isClickScroll = true;
-            }
-            // 重置
-            this._firstRender = false;
-
-            op.newSystemDate = date;
-            if (typeof date === 'string') {
-                _d = new Date(date);
-                op.newSystemDate = {
-                    getYear: _d.getFullYear(),
-                    getMonth: _d.getMonth() - 1,
-                    getDay: 1
-                };
-            }
-
-            // 销毁之前的iscroll
-            op.is.destroy();
-            op.is = null;
-            $(op.render).html('');
-            // 重新初始化日期 重新渲染dom
-            this._init(op);
-
-            // 滚动完毕之后回调当前是那一年和月份
-            callback = op.callback;
-            
-            if ($.isFunction(callback) && op.isClickScroll) {
-                var nowDate = $( "#" + op.target).find('.widget-select-date:nth-child(2)').attr('data-date').split('-');
-                
-                callback({
-                    year: nowDate[0],
-                    month: nowDate[1],
-                    date: nowDate[0] + '-' + nowDate[1]
-                });
-            }
-        },
-        reloadIscroll: function (index) {
-
             //
         },
-        _event: function () {
-            
-            var self = this
-                , op = self.options
-                , render = op.render
-                , span = op.span
-                , texts = op.texts
-                , todayText = texts.today
-                , startText = texts.start
-                , endText = texts.end
-                , callback = op.callback
-                , target = "#" + op.target
-                , is = op.is
-                , wScroll = op.wScroll
-                , tdString = target + ' .widget-select-date-table tr td'
-                , td = $(tdString)
-                , evt = self.evt
-                , adpter = op.adpter
-                , adpterLength = 0
-                , type = op.type
-                ;
-
-            target = $(target);
-
-            // 横向滚动
-            if (wScroll) {
-                is.on('scrollStart', function () {
-                    target.addClass('widget-select-date-td-bdr');
-                    self.options.clickPage = false;
-                    // if (type === 'schedule') {
-                    //     //
-                    // }
-                });
-                var scrollMoveIndex = 0;
-                is.on('scrollMove', function () {
-                    scrollMoveIndex = this.x;
-                });
-                is.on('scrollEnd', function () {
-
-                });
-            }
-
-            
+        // 点击事件
+        event: function () {
+            //
         },
         // 获取时间戳
         _getTime: function (date) {
@@ -769,25 +703,40 @@
                 return 0;
             }
         },
-        // 时间间隔计算
-        _getDateDiff: function (startDate, endDate) { 
-            var startTime   = typeof startDate == 'string' ? this._getTime(startDate) : startDate  
-                , endTime   = typeof endDate == 'string' ? this._getTime(endDate) : endDate
-                , timestamp = Math.abs(startTime - endTime) / (1000*60*60*24)
-                ;     
-            return timestamp;    
-        },
-        // 返回间隔时间的每一天
-        _getIntervalDate: function (startDate, endDate) {
-            
-            return arr;
-        },
         // 得到某个月份的天数
         getMonthDay: function (Year, Month) {
             return new Date(Year, Month, 0).getDate();
         },
-        _createIscroll: function () {
-            //
+        // 创建iscroll
+        createIscroll: function (id) {
+            var self = this;
+            var op = this.options;
+            
+            op.iscroll = new IScroll(id, {
+                scrollX: true,
+                // 这个值可以改变改变动画的势头持续时间/速度。更高的数字使动画更短。你可以从0.01开始去体验，这个值和基本的值比较，基本上没有动能。
+                deceleration: 10,
+                startX: -$(id).find('.widget-ui-calendarjs-date').eq(0).width()-10,
+                snap: $(id).find('.widget-ui-calendarjs-date')
+            });
+            // 当前在第几页
+            op.currentPage = 1;
+            
+            // 滚动结束
+            op.iscroll.on('scrollEnd', function () {
+                var index = this.currentPage.pageX;
+                // 滑动在当前月份不做操作
+                if (op.currentPage != index) {
+                    // 上一个月
+                    if (index === 0) {
+                        self.slideScrollPrev();
+                    }
+                    // 下一个月
+                    else if (index === 2) {
+                        //
+                    }
+                }
+            });
         },
         // 创建头部(星期名称)
         createWeekNameTemplate: function () {
@@ -805,18 +754,19 @@
             html += '</div>';
 
             // 创建星期名称
-            id.prepend(html);
+            id.append(html);
         },
         // 创建月份模板 y年 m月
-        createMonthTemplate: function (y, m, today) {
+        createMonthTemplate: function (y, m) {
             var op = this.options, i = 0, n = 0, filling = 35, date, week, year, day, month, lunar, lDay, IDayCn, IMonthCn, Term, str, holidays, strD, strM, holidaysI,
                 // 得到某个月份的天数
                 len = this.getMonthDay(y, m),
-                firstDayWeek = new Date(y, m-1, 1).getDay() - 1,
+                d = new Date(y, m-1, 1),
+                firstDayWeek = d.getDay() - 1,
                 systemDate = op.systemDate.split('-'),
                 cls = '',
-                html = '';
-                console.log(firstDayWeek)
+                html = '<table width="100%" class="widget-ui-calendarjs-date" data-yearmonth="' + d.getFullYear() + '-' + (d.getMonth() + 1) + '"><tbody>';
+
             // 需要填补后面空位
             filling = len % 7 === 0 ? len : len + (7 - len % 7); 
 
@@ -890,8 +840,10 @@
                     }
                     html += '</tr>';
                 }
-
             }
+
+            html += '</tbody></table>';
+
             return html;
         },
         // 创建模板
@@ -909,14 +861,13 @@
                 html = '';
 
             for (var i = 0; i < 3; i++) {
-                html += '<table width="100%" class="widget-ui-calendarjs-date"><tbody>';
-                html += this.createMonthTemplate(systemDate[0], parseInt(systemDate[1]) + (i - 1), systemDate[2]);
-                html += '</tbody></table>';
+                html += this.createMonthTemplate(systemDate[0], parseInt(systemDate[1]) + (i - 1));
             }
-            
-            
+
             // 创建星期名称
-            id.append('<div class="iscroll">' + html + '</div>');
+            id.append('<div class="calendarjs-iscroll">' + html + '</div>');
+
+            this.createIscroll('#' + this.id);
         },
         // 销毁calendarjs
         destroy: function () {

@@ -7,10 +7,36 @@
     text-align: center;
 }
 /*begin header*/
+.widget-ui-calendarjs-header-title{
+    position:absolute;
+    top:0;
+    left:-1vw;
+    width:100vw;
+    height:50px;
+    line-height:50px;
+    text-align:center;
+    background:#CF4857;
+    font-size:16px;
+    color:#fff;
+}
+.calendarjs-header-title-yearmonth{
+    font-size:18px;
+}
+.widget-ui-calendarjs-header-title>a{
+    color:#fff
+}
+.calendarjs-header-title-prev{
+    float:left;
+    margin-left:15px;
+}
+.calendarjs-header-title-next{
+    float:right;
+    margin-right:15px;
+}
 .calendarjs-iscroll{
     width:calc(294vw + 20px);
     width:-webkit-calc(294vw + 20px);
-    padding-top:35px;
+    padding-top: 85px;
     overflow:hidden;
 }
 .calendarjs-iscroll>.widget-ui-calendarjs-date{
@@ -19,7 +45,7 @@
 }
 .widget-ui-calendarjs-header{
     position:absolute;
-    top:0;
+    top: 50px;
     left:0;
     width:98vw;
     height:35px;

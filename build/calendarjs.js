@@ -661,18 +661,35 @@
         },
         // 滑动到上一个月
         slideScrollPrev: function () {
+            this.setDate(2);
+        },
+        // 滑动到下一个月
+        slideScrollNext: function () {
+            this.setDate(0);
+        },
+        // 设置日期
+        setDate: function (i) {
             var op = this.options,
                 id = $('#' + this.id),
+                n = i === 2 ? -2 : 2,
                 // 系统时间
                 systemDate = op.systemDate.split('-'),
                 table = id.find('.calendarjs-iscroll .widget-ui-calendarjs-date'),
-                nowYearMonth = table.attr('data-yearmonth').split('-'),
-                html = this.createMonthTemplate(nowYearMonth[0], parseInt(nowYearMonth[1]) - 1);
+                nowYearMonth = table.eq(1).attr('data-yearmonth').split('-'),
+                html = this.createMonthTemplate(nowYearMonth[0], parseInt(nowYearMonth[1]) + n),
+                dom = id.find('div.calendarjs-iscroll');
+                
+            // 删除第一个月或者最后一个月
+            table.eq(i).remove();
 
-            // 重新赋值滚动到那一页
-            op.currentPage = 1;
-            table.eq(2).remove();
-            id.find('div.calendarjs-iscroll').prepend(html);
+            // 添加上一个月或者下一个的节点
+            if (i === 2) {
+                // 添加上一个月节点
+                dom.prepend(html);
+            } else if (i === 0) {
+                // 添加下一个月节点
+                dom.append(html);
+            }          
 
             // 销毁之前的iscroll
             this.options.iscroll.destroy();
@@ -681,27 +698,9 @@
             // 重新创建iscroll
             this.createIscroll('#' + this.id);
         },
-        // 滑动到下一个月
-        slideScrollNext: function (flg) {
-            // 重新赋值滚动到那一页
-            this.options.currentPage = 2;
-            this.scrollAnimation(2, flg);
-        },
-        // 设置日期
-        setDate: function (date) {
-            //
-        },
         // 点击事件
         event: function () {
             //
-        },
-        // 获取时间戳
-        _getTime: function (date) {
-            if (date) {
-                return new Date(Date.parse(date.replace(/-/g,"/"))).getTime();
-            } else {
-                return 0;
-            }
         },
         // 得到某个月份的天数
         getMonthDay: function (Year, Month) {
@@ -709,22 +708,34 @@
         },
         // 创建iscroll
         createIscroll: function (id) {
-            var self = this;
-            var op = this.options;
+            var self = this,
+                op = this.options,
+                dom = $(id).find('.calendarjs-iscroll .widget-ui-calendarjs-date');
+
+            // 当前年月
+            op.yearmonth = dom.eq(1).attr('data-yearmonth');
             
+            $(id).find('.calendarjs-header-title-yearmonth').html(op.yearmonth);
             op.iscroll = new IScroll(id, {
                 scrollX: true,
                 // 这个值可以改变改变动画的势头持续时间/速度。更高的数字使动画更短。你可以从0.01开始去体验，这个值和基本的值比较，基本上没有动能。
-                deceleration: 10,
-                startX: -$(id).find('.widget-ui-calendarjs-date').eq(0).width()-10,
-                snap: $(id).find('.widget-ui-calendarjs-date')
+                deceleration: 0.01,
+                startX: -dom.eq(0).width()-10,
+                snap: dom
             });
             // 当前在第几页
             op.currentPage = 1;
-            
+            var firstX = 0;
+            op.iscroll.on('scrollStart', function () {
+                firstX = this.x;
+            });
+            op.iscroll.on('scrollMove', function () {
+                console.log(this.x - firstX)
+            });
             // 滚动结束
             op.iscroll.on('scrollEnd', function () {
                 var index = this.currentPage.pageX;
+
                 // 滑动在当前月份不做操作
                 if (op.currentPage != index) {
                     // 上一个月
@@ -733,7 +744,7 @@
                     }
                     // 下一个月
                     else if (index === 2) {
-                        //
+                        self.slideScrollNext();
                     }
                 }
             });
@@ -752,24 +763,29 @@
             }
 
             html += '</div>';
-
+            html += '<div class="widget-ui-calendarjs-header-title">';
+            html += '   <a href="javascript:void(0);" class="calendarjs-header-title-prev">prev</a>\
+                        <span class="calendarjs-header-title-yearmonth">' + op.yearmonth + '</span>\
+                        <a href="javascript:void(0);" class="calendarjs-header-title-next">next</a>\
+                    ';
+            html += '</div>';
             // 创建星期名称
             id.append(html);
         },
         // 创建月份模板 y年 m月
         createMonthTemplate: function (y, m) {
-            var op = this.options, i = 0, n = 0, filling = 35, date, week, year, day, month, lunar, lDay, IDayCn, IMonthCn, Term, str, holidays, strD, strM, holidaysI,
-                // 得到某个月份的天数
-                len = this.getMonthDay(y, m),
+            var op = this.options, i = 0, n = 0, filling, date, week, year, day, month, lunar, lDay, IDayCn, IMonthCn, Term, str, holidays, strD, strM, holidaysI,
                 d = new Date(y, m-1, 1),
                 firstDayWeek = d.getDay() - 1,
+                // 得到某个月份的天数 
+                len = this.getMonthDay(y, m) + firstDayWeek,
                 systemDate = op.systemDate.split('-'),
                 cls = '',
                 html = '<table width="100%" class="widget-ui-calendarjs-date" data-yearmonth="' + d.getFullYear() + '-' + (d.getMonth() + 1) + '"><tbody>';
 
             // 需要填补后面空位
             filling = len % 7 === 0 ? len : len + (7 - len % 7); 
-
+            
             for (; i < filling; i++) {
                 // 一个星期
                 if (i % 7 === 0) {

@@ -712,21 +712,28 @@
                 td = $(e.evt.target).parent('td');
                 // 上一个月
                 if (td.hasClass('yesterday')) {
-                    // iscroll.scrollTo(0, 0, 300);
+                    setTimeout(function () {
+                        iscroll.scrollTo(0, 0, 300);
+                    }, 6);
                     setTimeout(function () {
                         this.slideScrollPrev();
                     }.bind(this), 305);
                 }
                 // 下一个月
                 if (td.hasClass('tomorrow')) {
-                    
-                    // iscroll.scrollTo(max, 0, 300);
+                    setTimeout(function () {
+                        iscroll.scrollTo(max, 0, 300);
+                    }, 6);
                     setTimeout(function () {
                         this.slideScrollNext();
                     }.bind(this), 305);
                 }
-                d.find('td.click').removeClass('click');
-                td.addClass('click');
+                // 点中的是td
+                if (td[0]) {
+                    d.find('td.click').removeClass('click');
+                    td.addClass('click');
+                }
+                
             }.bind(this));
         },
         // 得到某个月份的天数
@@ -805,7 +812,7 @@
                 d = new Date(y, m-1, 1),
                 firstDayWeek = d.getDay() - 1,
                 // 得到某个月份的天数 
-                len = this.getMonthDay(y, m) + firstDayWeek,
+                len = this.getMonthDay(y, m) + firstDayWeek + 1,
                 systemDate = op.systemDate.split('-'),
                 cls = '',
                 html = '<table width="100%" class="widget-ui-calendarjs-date" data-yearmonth="' + d.getFullYear() + '-' + (d.getMonth() + 1) + '"><tbody>';
@@ -874,7 +881,10 @@
                         else if (holidays) {
                             cls = ' class="holidays"';
                         }
-
+                        // 24节气
+                        else if (Term) {
+                            cls = ' class="solarterms24"';
+                        }
                         html += '<td' + cls + ' data-day="' + year + '-' + month  + '-' + day + '">';
                         // 一个星期里面的每一天
                         html += '<div class="calendarjs-date-border">' + day + '</div>';

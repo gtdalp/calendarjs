@@ -34,18 +34,20 @@
     var calendar = {
         // 常见节假日
         holidays: {
-            "0101": "春节 ",
-            "0115": "元宵节",
-            "0202": "龙头节",
-            "0505": "端午节",
-            "0707": "七夕节",
-            "0715": "中元节",
-            "0815": "中秋节",
-            "0909": "重阳节",
-            "1001": "寒衣节",
-            "1015": "下元节",
-            "1208": "腊八节",
-            "1223": "小年",
+            /*农历节日*/
+            "t0101": "春节 ",
+            "t0115": "元宵节",
+            "t0202": "龙头节",
+            "t0505": "端午节",
+            "t0707": "七夕节",
+            "t0715": "中元节",
+            "t0815": "中秋节",
+            "t0909": "重阳节",
+            "t1001": "寒衣节",
+            "t1015": "下元节",
+            "t1208": "腊八节",
+            "t1223": "小年",
+            /*公历节日*/
             "0202": "湿地日",
             "0308": "妇女节",
             "0315": "消费者权益日",
@@ -624,6 +626,8 @@
                 isLunarDate: true,
                 // 是否显示农历节日
                 isHoliday: true,
+                // 防止多次点击
+                firstClick: true,
             }
             $.extend(true, this.options, options);
             // 执行render
@@ -703,12 +707,20 @@
         },
         // 点击事件
         event: function () {
-            var dom = '#' + this.id + ' .calendarjs-iscroll';
+            var op = this.options,
+                id = '#' + this.id, td,
+                prevAndNext = id + ' .widget-ui-calendarjs-header-title>a',
+                dom = id + ' .calendarjs-iscroll';
             
-            var td;
+            // 点击每一天
             this.evt($(dom), 'click', function (d, e) {
+
+                // 防止多次点击
+                if (!op.firstClick) return;
+                op.firstClick = false;
+
                 var iscroll = this.options.iscroll;
-                var max = iscroll.maxScrollX
+                var max = iscroll.maxScrollX;
                 td = $(e.evt.target).parent('td');
                 // 上一个月
                 if (td.hasClass('yesterday')) {
@@ -733,7 +745,34 @@
                     d.find('td.click').removeClass('click');
                     td.addClass('click');
                 }
-                
+            }.bind(this));
+
+            // 点击上一个月/下一个月
+            this.evt($(prevAndNext), 'click', function (dom) {
+
+                // 防止多次点击
+                if (!op.firstClick) return;
+                op.firstClick = false;
+
+                var iscroll = this.options.iscroll,
+                        max = iscroll.maxScrollX;
+
+                // 点击上一个月
+                if (dom.hasClass('calendarjs-header-title-prev')) {
+                    max = 0;
+                    setTimeout(function () {
+                        this.slideScrollPrev();
+                    }.bind(this), 305);
+                }
+                // 点击下一个月
+                else if (dom.hasClass('calendarjs-header-title-next')) {
+                    setTimeout(function () {
+                        this.slideScrollNext();
+                    }.bind(this), 305);
+                }
+                setTimeout(function () {
+                    iscroll.scrollTo(max, 0, 300);
+                }, 6);
             }.bind(this));
         },
         // 得到某个月份的天数
@@ -782,6 +821,11 @@
                     }
                 }
             });
+            // 防止多次点击
+            setTimeout(function () {
+                op.firstClick = true;
+            }, 500);
+            
         },
         // 创建头部(星期名称)
         createWeekNameTemplate: function () {
@@ -862,8 +906,9 @@
                             strM = '' + month;
                         }
                         holidaysI = strM + strD;
-                        // 节假日
-                        holidays = calendar.holidays[holidaysI];
+
+                        // 节假日 农历节假日
+                        holidays = calendar.holidays[holidaysI] || calendar.holidays['t' + holidaysI];
 
                         // 昨天
                         if (i === 0 && day > 10) {

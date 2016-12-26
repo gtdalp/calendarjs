@@ -59,10 +59,12 @@ require(['zepto', 'iscroll', 'calendarjs'], function(){
         weekName: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
         // 是否设置过期日期显示灰色
         isExpired: true,
-        // 是否显示农历
-        isLunarDate: false,
-        // 是否显示农历节日
-        isHoliday: false,
+        // 是否显示农历 默认为true
+        // isLunarDate: false,
+        // 是否显示农历24节气 默认为true
+        // isLunarDateHoliday: false,
+        // 公历节日 默认为true
+        // isHoliday: false,
         // 点击日期回调
         clickCallback: function (data) {
             // 
@@ -130,7 +132,8 @@ require.config({
     paths: {
         "zepto": "../src/jslib/zepto.min",
         "iscroll": "../src/jslib/iscroll.min",
-        "calendarjs": "../dist/js/calendarjs.min"
+        "calendarjs": "../build/calendarjs"
+        // "calendarjs": "../dist/js/calendarjs.min"
     }
 });
 </script>

@@ -624,7 +624,9 @@
                 weekName: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
                 // 是否显示农历
                 isLunarDate: true,
-                // 是否显示农历节日
+                // 农历24节气 
+                isLunarDateHoliday: true,
+                // 公历节日
                 isHoliday: true,
                 // 防止多次点击
                 firstClick: true,
@@ -724,7 +726,7 @@
                 var max = iscroll.maxScrollX;
                 td = $(e.evt.target).parent('td');
                 // 上一个月
-                if (td.hasClass('yesterday')) {
+                if (td.hasClass('lastMonth')) {
                     setTimeout(function () {
                         iscroll.scrollTo(0, 0, 300);
                     }, 6);
@@ -859,6 +861,9 @@
                 // 得到某个月份的天数 
                 len = this.getMonthDay(y, m) + firstDayWeek + 1,
                 systemDate = op.systemDate.split('-'),
+                // 农历24节气 
+                isLunarDateHoliday = op.isLunarDateHoliday,
+                isLunarDate = op.isLunarDate,
                 isHoliday = op.isHoliday,
                 cls = '',
                 html = '<table width="100%" class="widget-ui-calendarjs-date" data-yearmonth="' + d.getFullYear() + '-' + (d.getMonth() + 1) + '"><tbody>';
@@ -881,7 +886,7 @@
                         // 公历年月日转农历数据
                         lunar = calendar.solar2lunar(year, month, day);
                         // 24节气
-                        Term = isHoliday ? lunar.Term : '';
+                        Term = isLunarDateHoliday ? lunar.Term : '';
                         // 农历的第一天
                         lDay = lunar.lDay;
                         // 农历当天
@@ -910,11 +915,11 @@
                         holidaysI = strM + strD;
 
                         // 节假日 农历节假日
-                        holidays = calendar.holidays[holidaysI] || calendar.holidays['t' + holidaysI];
-
+                        holidays = (isHoliday ? calendar.holidays[holidaysI] : '') || calendar.holidays['t' + holidaysI];
+                        
                         // 昨天
                         if (i === 0 && day > 10) {
-                            cls = ' class="yesterday"';
+                            cls = ' class="lastMonth"';
                         } 
                         // 明天
                         else if ((i/7) >= 4 && day < 10){
@@ -929,13 +934,16 @@
                             cls = ' class="holidays"';
                         }
                         // 24节气
-                        else if (Term && isHoliday) {
+                        else if (Term && isLunarDateHoliday) {
                             cls = ' class="solarterms24"';
                         }
                         html += '<td' + cls + ' data-day="' + year + '-' + month  + '-' + day + '">';
                         // 一个星期里面的每一天
                         html += '<div class="calendarjs-date-border">' + day + '</div>';
-                        html += '<div class="lunar-calendar">' + (holidays || str) + '</div>';
+                        // 是否显示农历
+                        if (isLunarDate) {
+                            html += '<div class="lunar-calendar">' + (holidays || str) + '</div>';
+                        }
                         html += '</td>';
                     }
                     html += '</tr>';
@@ -955,8 +963,6 @@
                 bgStyle = op.bgStyle,
                 // 是否显示农历
                 isLunarDate = op.isLunarDate,
-                // 是否显示农历节日
-                isHoliday = op.isHoliday,
                 // 模板
                 html = '';
 

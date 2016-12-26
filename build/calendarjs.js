@@ -628,6 +628,7 @@
                 isHoliday: true,
                 // 防止多次点击
                 firstClick: true,
+
             }
             $.extend(true, this.options, options);
             // 执行render
@@ -858,6 +859,7 @@
                 // 得到某个月份的天数 
                 len = this.getMonthDay(y, m) + firstDayWeek + 1,
                 systemDate = op.systemDate.split('-'),
+                isHoliday = op.isHoliday,
                 cls = '',
                 html = '<table width="100%" class="widget-ui-calendarjs-date" data-yearmonth="' + d.getFullYear() + '-' + (d.getMonth() + 1) + '"><tbody>';
 
@@ -879,7 +881,7 @@
                         // 公历年月日转农历数据
                         lunar = calendar.solar2lunar(year, month, day);
                         // 24节气
-                        Term = lunar.Term;
+                        Term = isHoliday ? lunar.Term : '';
                         // 农历的第一天
                         lDay = lunar.lDay;
                         // 农历当天
@@ -923,11 +925,11 @@
                             cls = ' class="today"';
                         }
                         // 节假日
-                        else if (holidays) {
+                        else if (holidays && isHoliday) {
                             cls = ' class="holidays"';
                         }
                         // 24节气
-                        else if (Term) {
+                        else if (Term && isHoliday) {
                             cls = ' class="solarterms24"';
                         }
                         html += '<td' + cls + ' data-day="' + year + '-' + month  + '-' + day + '">';
